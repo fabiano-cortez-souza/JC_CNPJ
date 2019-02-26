@@ -2,7 +2,6 @@ package br.com.fabiano.main;
 
 import br.com.fabiano.bd.ExecSQL;
 import br.com.fabiano.io.readFile;
-import br.com.fabiano.linhas.HEADER;
 
 public class JC_APP {
 
