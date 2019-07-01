@@ -13,6 +13,7 @@ public class JC_APP {
 		 * Testa se Banco disponivel
 		 */
 		if (execSQL.testeDB()){
+			System.out.println("Conectou no Banco com sucesso!!!");
 			/*
 			 * Testa se arquivo Existe
 			 */

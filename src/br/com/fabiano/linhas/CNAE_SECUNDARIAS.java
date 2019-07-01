@@ -11,7 +11,7 @@ public class CNAE_SECUNDARIAS {
 		
         String    TIPO_DO_REGISTRO        =  apas +registro_0.substring(0,1).trim() + apas;
 		String    INDICADOR_FULL_DIARIO   =  apas +registro_0.substring(1,2).trim() + apas;
-		String    TIPO_DE_ATUALIZAÇÃO     =  apas +registro_0.substring(2,3).trim() + apas;
+		String    TIPO_DE_ATUALIZACAO     =  apas +registro_0.substring(2,3).trim() + apas;
 		Double    CNPJ                    =  Double.parseDouble( registro_0.substring(3,17));
 		Integer   CNAE_SECUNDARIA         =  validainteiro.validaInteger(registro_0.substring(17,24));
 		String    FILLER                  =  apas +registro_0.substring(24,513).trim() + apas;
@@ -20,7 +20,7 @@ public class CNAE_SECUNDARIAS {
 		query = "Insert into TAB_CNAE_SECUNDARIAS  values (" +  
 				TIPO_DO_REGISTRO       + virgula +
 				INDICADOR_FULL_DIARIO  + virgula +
-				TIPO_DE_ATUALIZAÇÃO    + virgula +
+				TIPO_DE_ATUALIZACAO    + virgula +
 				CNPJ                   + virgula +
 				CNAE_SECUNDARIA        + virgula +
 				FILLER                 + virgula +

@@ -13,11 +13,11 @@ public class SOCIOS {
 		
         Integer TIPO_DE_REGISTRO                        = validainteiro.validaInteger(registro.substring(0,1));
 		String  INDICADOR_FULL_DIARIO                   = apas + registro.substring(1,2).trim() + apas;
-		String  TIPO_DE_ATUALIZAÇÃO                     = apas + registro.substring(2,3).trim() + apas;
+		String  TIPO_DE_ATUALIZACAO                     = apas + registro.substring(2,3).trim() + apas;
 		Integer CNPJ                                    = validainteiro.validaInteger (registro.substring(3,17));
 		Integer IDENTIFICADOR_DE_SOCIO                  = validainteiro.validaInteger(registro.substring(17,18));
 		String  NOME_SOCIO_NO_CASO_PF                   = apas + registro.substring(18,168).trim() + apas;
-		String  CNPJ_CPF_DO_SÓCIO                       = apas + registro.substring(168,182).trim() + apas;
+		String  CNPJ_CPF_DO_SOCIO                       = apas + registro.substring(168,182).trim() + apas;
 		String  CODIGO_QUALIFICACAO_SOCIO               = apas + registro.substring(182,184).trim() + apas;
 		Integer PERCENTUAL_CAPITAL_SOCIAL               = validainteiro.validaInteger(registro.substring(184,189));
 		Integer DATA_ENTRADA_SOCIEDADE                  = validainteiro.validaInteger( registro.substring(189,197));
@@ -34,11 +34,11 @@ public class SOCIOS {
 		query = "Insert into TAB_SOCIOS values ("            +  
 				TIPO_DE_REGISTRO                        + virgula +
 				INDICADOR_FULL_DIARIO                   + virgula + 
-				TIPO_DE_ATUALIZAÇÃO                     + virgula +
+				TIPO_DE_ATUALIZACAO                     + virgula +
 				CNPJ                                    + virgula +
 				IDENTIFICADOR_DE_SOCIO                  + virgula +
 				NOME_SOCIO_NO_CASO_PF                   + virgula +
-				CNPJ_CPF_DO_SÓCIO                       + virgula +
+				CNPJ_CPF_DO_SOCIO                       + virgula +
 				CODIGO_QUALIFICACAO_SOCIO               + virgula +
 				PERCENTUAL_CAPITAL_SOCIAL               + virgula +
 				DATA_ENTRADA_SOCIEDADE                  + virgula +
