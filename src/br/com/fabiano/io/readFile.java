@@ -49,52 +49,56 @@ public class readFile {
 
 			String sCurrentLine;
 
-			
 			/*
 			 * Coração do programa
 			 */
 			while ((sCurrentLine = br.readLine()) != null) {
 
-				count = count + 1;
-				// System.out.println(sCurrentLine.substring(0,1));
+			    try {
+	                count = count + 1;
+	                // System.out.println(sCurrentLine.substring(0,1));
 
-				String query = null;
-				Integer tipo = Integer.parseInt(sCurrentLine.toString().substring(0, 1));
+	                String query = null;
+	                Integer tipo = Integer.parseInt(sCurrentLine.toString().substring(0, 1));
 
-				switch (tipo.intValue()) {
-				case 0:
-					query = new HEADER().transforma(sCurrentLine);
-					break;
-				case 1:
-					query = new PRINCIPAL().transforma(sCurrentLine, count);
-					break;
-				case 2:
-					query = new SOCIOS().transforma(sCurrentLine);
-					break;
-				case 6:
-					query = new CNAE_SECUNDARIAS().transforma(sCurrentLine);
-					break;
-				case 9:
-					query = new TRAILLER().transforma(sCurrentLine);
-					break;
-				default:
-					break;
-				}
+	                switch (tipo.intValue()) {
+	                case 0:
+	                    query = new HEADER().transforma(sCurrentLine);
+	                    break;
+	                case 1:
+	                    query = new PRINCIPAL().transforma(sCurrentLine, count);
+	                    break;
+	                case 2:
+	                    query = new SOCIOS().transforma(sCurrentLine);
+	                    break;
+	                case 6:
+	                    query = new CNAE_SECUNDARIAS().transforma(sCurrentLine);
+	                    break;
+	                case 9:
+	                    query = new TRAILLER().transforma(sCurrentLine);
+	                    break;
+	                default:
+	                    break;
+	                }
 
-				// TODO Auto-generated method stub
-				try {
-					boolean ok = execSQL.execInsert(query, conn);
-					if (ok) {
-						// System.out.println("Comando SQL : Execução OK");
-						System.out.println("LINHA.: " + count + " TIPO.: " + tipo.intValue());
+	                // TODO Auto-generated method stub
+	                try {
+	                    boolean ok = execSQL.execInsert(query, conn);
+	                    if (ok) {
+	                        // System.out.println("Comando SQL : Execução OK");
+	                        System.out.println("LINHA.: " + count + " TIPO.: " + tipo.intValue());
 
-					} else {
-						System.out.println("Comando SQL : Execução NOK" + query);
-					}
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+	                    } else {
+	                        System.out.println("Comando SQL : Execução NOK = " + query);
+	                    }
+	                } catch (Exception e) {
+	                    // TODO Auto-generated catch block
+	                  System.out.println("Merda no Insert: " + e.toString());
+	                }
+                    
+                } catch (Exception e) {
+                    System.out.println("Merda na Transformação: " + e.toString());
+                }
 			}
 
 		} catch (IOException e) {

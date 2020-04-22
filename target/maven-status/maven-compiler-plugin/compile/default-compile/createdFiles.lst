@@ -1,0 +1,12 @@
+br/com/fabiano/io/readFile.class
+br/com/fabiano/linhas/TRAILLER.class
+br/com/fabiano/linhas/CNAE_SECUNDARIAS.class
+br/com/fabiano/bd/ConnectionDB.class
+br/com/fabiano/util/TrataString.class
+br/com/fabiano/main/JC_APP.class
+br/com/fabiano/linhas/PRINCIPAL.class
+br/com/fabiano/linhas/HEADER.class
+br/com/fabiano/infra/GetProperties.class
+br/com/fabiano/common/ValidaInteger.class
+br/com/fabiano/linhas/SOCIOS.class
+br/com/fabiano/bd/ExecSQL.class

@@ -1,0 +1,30 @@
+================= SHELL =================
+for ps in `ps -ef | grep -iE 'cnpj|exec.sh' | grep -v grep | awk '{print $2}'` 
+do
+ kill -9 $ps
+done
+
+grep -vi tipo ~/CNPJ/log_parallel/log_java_K3241.K03200DV.D90607.L0000*
+
+================= DB ================= 
+
+select concat('tcs - ',count(*)) as qtde from CNPJ.tab_cnae_secundarias tcs
+union
+select concat('th  - ',count(*)) from CNPJ.tab_header th
+union
+select concat('tp  - ',count(*)) from CNPJ.tab_principal tp
+union
+select concat('ts  - ',count(*)) from CNPJ.tab_socios ts
+union
+select concat('tt  - ',count(*)) from CNPJ.tab_trailler tt 
+order by 1
+
+
+delete from CNPJ.tab_cnae_secundarias;
+delete from CNPJ.tab_header;
+delete from CNPJ.tab_principal;
+delete from CNPJ.tab_socios;
+delete from CNPJ.tab_trailler; 
+
+
+

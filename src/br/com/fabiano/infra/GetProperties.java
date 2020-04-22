@@ -14,7 +14,6 @@ public class GetProperties {
 			input = getClass().getClassLoader().getResourceAsStream(propFilename);
 			if (input == null) {
 				System.out.println("Sorry, unable to find " + propFilename);
-
 			}
 			prop.load(input);
 		} catch (IOException ex) {

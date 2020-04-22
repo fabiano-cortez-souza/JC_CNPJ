@@ -1,5 +1,4 @@
 #!/bin/bash
-qtde_arquivo_proc=$1
 retorno=0;
 	
 inicio() {
@@ -42,7 +41,7 @@ fim() {
 } 
 
 processa_parallel() {
- cat $LISTA_CNPJ | parallel --joblog $PARALLEL_CNPJ_LOG -j$qtde_arquivo_proc 'sh /home/jc/CNPJ/processa_cnpj.sh {}';
+ cat $LISTA_CNPJ | parallel --joblog $PARALLEL_CNPJ_LOG -j6 'sh /home/jc/CNPJ/processa_cnpj.sh {}';
  retorno=$?              
  case $retorno in 
  0)	 echo "Parallel OK $retorno."     >> $LOG_PARALLEL ;;

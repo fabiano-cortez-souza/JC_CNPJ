@@ -1,101 +1,122 @@
 package br.com.fabiano.linhas;
 
+import java.io.IOException;
+import java.util.Properties;
+
 import br.com.fabiano.common.ValidaInteger;
+import br.com.fabiano.infra.GetProperties;
+import br.com.fabiano.util.TrataString;
 
 public class PRINCIPAL {
-    private String  query                        ;
+    private StringBuilder query = new StringBuilder("");                    ;
 	
     private ValidaInteger validainteiro = new ValidaInteger();
 	
-    public String transforma(String registro, int qtde_reg) {
+    public String transforma(String registro, int qtde_reg) throws IOException {
 					
     	char virgula = ',';
-		char apas = '"';
-		
+    	
+        Properties prop = new GetProperties().getProperties();
+        String db = prop.getProperty("dbtipo");
+        String aspas = prop.getProperty(db + "_db_aspas");
+        
 		Integer TIPO_DE_REGISTRO             = (validainteiro.validaInteger(registro.substring(0,1))    );
-	    String  INDICADOR_FULL_DIARIO        = (apas + registro.substring(1,2).trim().replaceAll("\"", "") + apas      );
-	    String  TIPO_ATUALIZACAO             = (apas + registro.substring(2,3).trim().replaceAll("\"", "") + apas      );
+	    String  INDICADOR_FULL_DIARIO        = (aspas + TrataString.trataAspas(registro.substring(1,2))     + aspas );
+	    String  TIPO_ATUALIZACAO             = (aspas + TrataString.trataAspas(registro.substring(2,3))     + aspas );
 	    Integer CNPJ                         = (validainteiro.validaInteger(registro.substring(3,17))   );
 	    Integer IDENTIFICADORMATRIZ_FILIAL   = (validainteiro.validaInteger(registro.substring(17,18))  );
-	    String  RAZÃO_SOCIAL_NOMEEMPRESARIAL = (apas + registro.substring(18,168).trim().replaceAll("\"", "") + apas   );
-	    String  NOME_FANTASIA                = (apas + registro.substring(168,223).trim().replaceAll("\"", "") + apas  );
+	    String  RAZÃO_SOCIAL_NOMEEMPRESARIAL = (aspas + TrataString.trataAspas(registro.substring(18,168))  + aspas );
+	    String  NOME_FANTASIA                = (aspas + TrataString.trataAspas(registro.substring(168,223)) + aspas );
 	    Integer SITUACAOCADASTRAL            = (validainteiro.validaInteger(registro.substring(223,225)));
 	    Integer DATA_SITUACAOCADASTRAL       = (validainteiro.validaInteger(registro.substring(225,233)));
 	    Integer MOTIVO_SITUACAOCADASTRAL     = (validainteiro.validaInteger(registro.substring(233,235)));
-	    String  NM_CIDADEEXTERIOR            = (apas + registro.substring(235,290).trim().replaceAll("\"", "") + apas  );
-	    String  CO_PAIS                      = (apas + registro.substring(290,293).trim().replaceAll("\"", "") + apas  );
-	    String  NM_PAIS                      = (apas + registro.substring(293,363).trim().replaceAll("\"", "") + apas  );
+	    String  NM_CIDADEEXTERIOR            = (aspas + TrataString.trataAspas(registro.substring(235,290)) + aspas );
+	    String  CO_PAIS                      = (aspas + TrataString.trataAspas(registro.substring(290,293)) + aspas );
+	    String  NM_PAIS                      = (aspas + TrataString.trataAspas(registro.substring(293,363)) + aspas );
 	    Integer CODIGO_NATUREZAJURIDICA      = (validainteiro.validaInteger(registro.substring(363,367)));
 	    Integer DATA_INICIOATIVIDADE         = (validainteiro.validaInteger(registro.substring(367,375)));
 	    Integer CNAE_FISCAL                  = (validainteiro.validaInteger(registro.substring(375,382)));
-	    String  DESCRICAO_TIPOLOGRADOURO     = (apas + registro.substring(382,402).trim().replaceAll("\"", "") + apas  );
-	    String  LOGRADOURO                   = (apas + registro.substring(402,462).trim().replaceAll("\"", "") + apas  );
-	    String  NUMERO                       = (apas + registro.substring(462,468).trim().replaceAll("\"", "") + apas  );
-	    String  COMPLEMENTO                  = (apas + registro.substring(468,624).trim().replaceAll("\"", "") + apas  );
-	    String  BAIRRO                       = (apas + registro.substring(624,674).trim().replaceAll("\"", "") + apas  );
+	    String  DESCRICAO_TIPOLOGRADOURO     = (aspas + TrataString.trataAspas(registro.substring(382,402)) + aspas );
+	    String  LOGRADOURO                   = (aspas + TrataString.trataAspas(registro.substring(402,462)) + aspas );
+	    String  NUMERO                       = (aspas + TrataString.trataAspas(registro.substring(462,468)) + aspas );
+	    String  COMPLEMENTO                  = (aspas + TrataString.trataAspas(registro.substring(468,624)) + aspas );
+	    String  BAIRRO                       = (aspas + TrataString.trataAspas(registro.substring(624,674)) + aspas );
 	    Integer CEP                          = (validainteiro.validaInteger(registro.substring(674,682)));
-	    String  UF                           = (apas + registro.substring(682,684).trim().replaceAll("\"", "") + apas  );
+	    String  UF                           = (aspas + TrataString.trataAspas(registro.substring(682,684)) + aspas );
 	    Integer CODIGO_MUNICIPIO             = (validainteiro.validaInteger(registro.substring(684,688)));
-	    String  MUNICIPIO                    = (apas + registro.substring(688,738).trim().replaceAll("\"", "") + apas  );
-	    String  DDD_TELEFONE_1               = (apas + registro.substring(738,750).trim().replaceAll("\"", "") + apas  );
-	    String  DDD_TELEFONE_2               = (apas + registro.substring(750,762).trim().replaceAll("\"", "") + apas  );
-	    String  DDD_FAX                      = (apas + registro.substring(762,774).trim().replaceAll("\"", "") + apas  );
-	    String  CORREIO_ELETRONICO           = (apas + registro.substring(774,889).trim().replaceAll("\"", "") + apas  );
+	    String  MUNICIPIO                    = (aspas + TrataString.trataAspas(registro.substring(688,738)) + aspas );
+	    String  DDD_TELEFONE_1               = (aspas + TrataString.trataAspas(registro.substring(738,750)) + aspas );
+	    String  DDD_TELEFONE_2               = (aspas + TrataString.trataAspas(registro.substring(750,762)) + aspas );
+	    String  DDD_FAX                      = (aspas + TrataString.trataAspas(registro.substring(762,774)) + aspas );
+	    String  CORREIO_ELETRONICO           = (aspas + TrataString.trataAspas(registro.substring(774,889)) + aspas );
 	    Integer QUALIFICACAO_DO_RESPONSAVEL  = (validainteiro.validaInteger(registro.substring(889,891)));
 	    Double  CAPITAL_SOCIAL_DA_EMPRESA    = (Double.parseDouble(registro.substring(891,905))         );
-	    String  PORTE_EMPRESA                = (apas + registro.substring(905,907).trim().replaceAll("\"", "") + apas  );
-	    String  OPCAO_PELO_SIMPLES           = (apas + registro.substring(907,908).trim().replaceAll("\"", "") + apas  );
+	    String  PORTE_EMPRESA                = (aspas + TrataString.trataAspas(registro.substring(905,907)) + aspas );
+	    String  OPCAO_PELO_SIMPLES           = (aspas + TrataString.trataAspas(registro.substring(907,908)) + aspas );
 	    Integer DATA_OPCAO_PELO_SIMPLES      = (validainteiro.validaInteger(registro.substring(908,916)));
 	    Integer DATA_EXCLUSÃO_DO_SIMPLES     = (validainteiro.validaInteger(registro.substring(916,924)));
-	    String  OPCAO_PELO_MEI               = (apas + registro.substring(924,925).trim().replaceAll("\"", "") + apas  );
-	    String  SITUACAO_ESPECIAL            = (apas + registro.substring(925,948).trim().replaceAll("\"", "") + apas  );
-	    String  DATA_SITUACAO_ESPECIAL       = (apas + registro.substring(948,956).trim().replaceAll("\"", "") + apas  );
-	    String  FILLER                       = (apas + registro.substring(956,1199).trim().replaceAll("\"", "") + apas );
-	    String  FIM_DE_REGISTRO              = (apas + registro.substring(1199,1200).trim().replaceAll("\"", "") + apas);		
-		
-	    query = "Insert into TAB_PRINCIPAL values (" + 
-				TIPO_DE_REGISTRO             + virgula + 
-				INDICADOR_FULL_DIARIO        + virgula + 
-				TIPO_ATUALIZACAO             + virgula + 
-				CNPJ                         + virgula + 
-				IDENTIFICADORMATRIZ_FILIAL   + virgula + 
-				RAZÃO_SOCIAL_NOMEEMPRESARIAL + virgula + 
-				NOME_FANTASIA                + virgula + 
-				SITUACAOCADASTRAL            + virgula + 
-				DATA_SITUACAOCADASTRAL       + virgula + 
-				MOTIVO_SITUACAOCADASTRAL     + virgula + 
-				NM_CIDADEEXTERIOR            + virgula + 
-				CO_PAIS                      + virgula + 
-				NM_PAIS                      + virgula + 
-				CODIGO_NATUREZAJURIDICA      + virgula + 
-				DATA_INICIOATIVIDADE         + virgula + 
-				CNAE_FISCAL                  + virgula + 
-				DESCRICAO_TIPOLOGRADOURO     + virgula + 
-				LOGRADOURO                   + virgula + 
-				NUMERO                       + virgula + 
-				COMPLEMENTO                  + virgula + 
-				BAIRRO                       + virgula + 
-				CEP                          + virgula + 
-				UF                           + virgula + 
-				CODIGO_MUNICIPIO             + virgula + 
-				MUNICIPIO                    + virgula + 
-				DDD_TELEFONE_1               + virgula + 
-				DDD_TELEFONE_2               + virgula + 
-				DDD_FAX                      + virgula + 
-				CORREIO_ELETRONICO           + virgula + 
-				QUALIFICACAO_DO_RESPONSAVEL  + virgula + 
-				CAPITAL_SOCIAL_DA_EMPRESA    + virgula + 
-				PORTE_EMPRESA                + virgula + 
-				OPCAO_PELO_SIMPLES           + virgula + 
-				DATA_OPCAO_PELO_SIMPLES      + virgula + 
-				DATA_EXCLUSÃO_DO_SIMPLES     + virgula + 
-				OPCAO_PELO_MEI               + virgula + 
-				SITUACAO_ESPECIAL            + virgula + 
-				DATA_SITUACAO_ESPECIAL       + virgula + 
-				FILLER                       + virgula + 
-				FIM_DE_REGISTRO              + 
-				")";
+	    String  OPCAO_PELO_MEI               = (aspas + TrataString.trataAspas(registro.substring(924,925)) + aspas );
+	    String  SITUACAO_ESPECIAL            = (aspas + TrataString.trataAspas(registro.substring(925,948)) + aspas );
+	    String  DATA_SITUACAO_ESPECIAL       = (aspas + TrataString.trataAspas(registro.substring(948,956)) + aspas );
+	    String  FILLER                       = (aspas + TrataString.trataAspas(registro.substring(956,1199)) + aspas);
+	    String  FIM_DE_REGISTRO              = (aspas + TrataString.trataAspas(registro.substring(1199,1200)) + aspas);		
 	    
-		return query;
-	}
+	    query.append("Insert into CNPJ.TAB_PRINCIPAL values ("); 
+	    query.append(TIPO_DE_REGISTRO);             query.append( virgula ); 
+	    query.append(INDICADOR_FULL_DIARIO);        query.append( virgula ); 
+	    query.append(TIPO_ATUALIZACAO);             query.append( virgula );
+	    query.append(CNPJ);                         query.append( virgula );
+	    query.append(IDENTIFICADORMATRIZ_FILIAL);   query.append( virgula );
+	    query.append(RAZÃO_SOCIAL_NOMEEMPRESARIAL); query.append( virgula );
+	    query.append(NOME_FANTASIA);                query.append( virgula );
+	    query.append(SITUACAOCADASTRAL);            query.append( virgula );
+	    query.append(DATA_SITUACAOCADASTRAL);       query.append( virgula );
+	    query.append(MOTIVO_SITUACAOCADASTRAL);     query.append( virgula );
+	    query.append(NM_CIDADEEXTERIOR);            query.append( virgula );
+	    query.append(CO_PAIS);                      query.append( virgula );
+	    query.append(NM_PAIS);                      query.append( virgula );
+	    query.append(CODIGO_NATUREZAJURIDICA);      query.append( virgula );
+	    query.append(DATA_INICIOATIVIDADE);         query.append( virgula );
+	    query.append(CNAE_FISCAL);                  query.append( virgula );
+	    query.append(DESCRICAO_TIPOLOGRADOURO);     query.append( virgula );
+	    query.append(LOGRADOURO);                   query.append( virgula );
+	    query.append(NUMERO);                       query.append( virgula );
+	    query.append(COMPLEMENTO);                  query.append( virgula );
+	    query.append(BAIRRO);                       query.append( virgula );
+	    query.append(CEP);                          query.append( virgula );
+	    query.append(UF);                           query.append( virgula );
+	    query.append(CODIGO_MUNICIPIO);             query.append( virgula );
+	    query.append(MUNICIPIO);                    query.append( virgula );
+	    query.append(DDD_TELEFONE_1);               query.append( virgula );
+	    query.append(DDD_TELEFONE_2);               query.append( virgula );
+	    query.append(DDD_FAX);                      query.append( virgula );
+	    query.append(CORREIO_ELETRONICO);           query.append( virgula );
+	    query.append(QUALIFICACAO_DO_RESPONSAVEL);  query.append( virgula );
+	    query.append(CAPITAL_SOCIAL_DA_EMPRESA);    query.append( virgula );
+	    query.append(PORTE_EMPRESA);                query.append( virgula );
+	    query.append(OPCAO_PELO_SIMPLES);           query.append( virgula );
+	    query.append(DATA_OPCAO_PELO_SIMPLES);      query.append( virgula );
+	    query.append(DATA_EXCLUSÃO_DO_SIMPLES);     query.append( virgula );
+	    query.append(OPCAO_PELO_MEI);               query.append( virgula );
+	    query.append(SITUACAO_ESPECIAL);            query.append( virgula );
+	    query.append(DATA_SITUACAO_ESPECIAL);       query.append( virgula );
+	    query.append(FILLER);                       query.append( virgula );
+	    query.append(FIM_DE_REGISTRO);
+	    query.append(")");
+
+	    /*
+        if (registro.substring(168,223).trim().contains("\'")) {
+            System.out.println(registro.substring(168,223));
+            System.out.println("WARN: " + query.toString());
+        }
+        
+        /*
+        if (registro.substring(168,223).trim().contains("PEDO COMERCIO E REPRESENTACOES LTDA")) {
+            System.out.println(registro.substring(168,223));
+            System.out.println("ERRO OOOO: " + query.toString());
+        }
+        */
+	    
+		return query.toString();
+	}    
 }
