@@ -56,7 +56,6 @@ public class readFile {
 
 			    try {
 	                count = count + 1;
-	                // System.out.println(sCurrentLine.substring(0,1));
 
 	                String query = null;
 	                Integer tipo = Integer.parseInt(sCurrentLine.toString().substring(0, 1));
