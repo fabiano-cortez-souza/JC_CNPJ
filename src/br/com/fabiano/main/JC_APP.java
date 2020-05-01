@@ -1,40 +1,72 @@
 package br.com.fabiano.main;
 
+import java.io.File;
+
 import br.com.fabiano.bd.ExecSQL;
+import br.com.fabiano.common.EnumFalha;
+import br.com.fabiano.common.EnumStatusProcessamento;
 import br.com.fabiano.io.readFile;
+import br.com.fabiano.util.ControleProcessamento;
 
 public class JC_APP {
 
-	public static void main(String[] args) {
-		ExecSQL execSQL = new ExecSQL();
-		String arquivo = args[0];
-		//System.out.println(args[1]);
-		/*
-		 * Testa se Banco disponivel
-		 */
-		if (execSQL.testeDB()){
-			System.out.println("Conectou no Banco com sucesso!!!");
-			/*
-			 * Testa se arquivo Existe
-			 */
-			if ( new readFile().arquivoExiste(arquivo)) {
-				try {
-					processa(arquivo, execSQL);
-				} catch (Exception e) {
-					// TODO: handle exception
-					System.out.println("CAGOU: " + e.toString());
-				}
-				
-			} else {
-				System.out.println("ERRO: Arquivo nao existe !!! ");
-			}
-		} else {
-			System.out.println("ERRO: Banco não disponivel !!! ");
-		}
-	}
-	
-	private static void processa(String arquivo, ExecSQL execSQL) {
-		new readFile().processaArquivo(arquivo, execSQL);
-	}
+    static ControleProcessamento controleProcessamento = new ControleProcessamento();
 
+    public static void main(String[] args) {
+
+        ExecSQL execSQL = new ExecSQL();
+        String arquivo = args[0];
+        boolean verLog = true;
+        
+        // System.out.println(args[1]);
+        /*
+         * Testa se Banco disponivel
+         */
+        if (controleProcessamento.isOKfileSystem()) {
+            if (execSQL.testeDB(verLog)) {
+                System.out.println("Conectou no Banco com sucesso!!!");
+                /*
+                 * Testa se arquivo Existe
+                 */
+                if (new readFile().arquivoExiste(arquivo)) {
+                    try {
+                        if (controleProcessamento.gravaControle(new File(arquivo).getName().toString(), 0)) {
+                            processa(arquivo, execSQL, controleProcessamento);
+                        }
+                    } catch (Exception e) {
+                        System.out.println("CAGOU: " + e.toString());
+                        atualizaControle(arquivo, EnumStatusProcessamento.ERRO);
+                        controleProcessamento.finalizaExecPorFalha(EnumFalha.FalhaProcessamento.getIntLevel(), JC_APP.class.getName() );
+                    }
+                } else {
+                    System.out.println("ERRO: Arquivo nao existe !!! ");
+                    controleProcessamento.finalizaExecPorFalha(EnumFalha.FalhaFile.getIntLevel(), JC_APP.class.getName() );
+                }
+            } else {
+                System.out.println("ERRO: Banco não disponivel !!! ");
+                controleProcessamento.finalizaExecPorFalha(EnumFalha.FalhaDB.getIntLevel(), JC_APP.class.getName() );
+            }
+        }
+        atualizaControle(arquivo, EnumStatusProcessamento.PROCESSADO);
+    }
+
+    private static void processa(String arquivo, ExecSQL execSQL, ControleProcessamento controleProcessamento) {
+        new readFile().processaArquivo(arquivo, execSQL, controleProcessamento);
+    }
+
+    private static void atualizaControle(String arquivo, EnumStatusProcessamento enumprocess) {
+        try {
+            controleProcessamento.atualizaControle(arquivo, 0, enumprocess);
+        } catch (Exception e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+            System.out.println("ERRO: Gravação de controle falho !!! " + e1.toString());
+        }
+    }
+       
+    protected void finalize() {
+      controleProcessamento.closeConn();
+      System.gc();
+      System.out.println("object is garbage collected " + getClass());
+    }
 }

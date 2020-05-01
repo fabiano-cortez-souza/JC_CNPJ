@@ -1,5 +1,6 @@
 #!/bin/bash
 arquivo=$1;
+pahCNPJ=$2;
 DIRLOG="/home/jc/CNPJ/log_parallel";
 #
 inicio() {
@@ -23,7 +24,7 @@ fim() {
 } 
 
 processa() {
- java -jar /home/jc/CNPJ/CNPJ_LOAD.jar $arquivo >> $DIRLOG/log_java_$arquivo;
+ java -jar /home/jc/CNPJ/CNPJ_LOAD.jar $arquivo $pahCNPJ >> $DIRLOG/log_java_$arquivo;
  if [ $? -eq 0 ]; then
     echo "Processamento OK: $arquivo"              >> $DIRLOG/lista_cnpj_processado;
  else

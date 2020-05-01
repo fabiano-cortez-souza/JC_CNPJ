@@ -1,5 +1,6 @@
 #!/bin/bash
-qtde_arquivo_proc=$1
+qtde_arquivo_proc=$1;
+pahCNPJ="/ARQUIVOS";
 retorno=0;
 	
 inicio() {
@@ -20,7 +21,7 @@ inicio() {
  
  # Listagem dos arquivos
  # Camuinho dos arquivos CNPJ
- cd /media/jc/A6AA9A24AA99F153/Users/liceu/Documents/Lista\ de\ CNPJs\ do\ Brasil/DADOS\ ABERTOS\ CNPJ;
+ cd $pahCNPJ;
  MASCARA_ARQUIVO="K3241.K03200DV.D90607.L000??";
  
  #cd $path_arquivos

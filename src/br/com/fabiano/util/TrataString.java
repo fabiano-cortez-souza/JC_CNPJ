@@ -2,8 +2,11 @@ package br.com.fabiano.util;
 
 public final class TrataString {
 
-    public static String trataAspas(String t) {
-        String[] words = t.split(" ");
+    public static String trataAspas(String t, int posINI, int posFIM) {
+        
+        String nova = segregaString(t,posINI,posFIM);
+        
+        String[] words = nova.split(" ");
         StringBuilder retorno = new StringBuilder("");
 
         try {
@@ -19,7 +22,7 @@ public final class TrataString {
                 if ((word.indexOf("'") > -1)) {
                     word = word.replace("'", " ");
                 } else if ((word.indexOf("\"") > -1)) {
-                    int count = t.length() - t.replace("\"", "").length();
+                    int count = nova.length() - nova.replace("\"", "").length();
 
                     if (count == 2) {
                         word = word.replaceFirst("\"", "{");
@@ -35,4 +38,20 @@ public final class TrataString {
         }
         return retorno.toString().trim();
     }
+    
+    private static String segregaString(String registro, int posINI, int posFIM) {
+        
+        StringBuilder retorno = new StringBuilder("");
+        
+        try {
+            retorno.append(registro.substring(posINI,posFIM));
+        } catch (StringIndexOutOfBoundsException estiob) { 
+            // TODO: handle exception
+            retorno.append("E");
+            System.out.println("Registro com campos fora de posição: " + registro);
+        } catch (Exception e) {
+        }
+        return retorno.toString();
+    }
+
 }

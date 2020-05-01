@@ -9,137 +9,198 @@ import java.sql.SQLException;
 
 import br.com.fabiano.bd.ConnectionDB;
 import br.com.fabiano.bd.ExecSQL;
+import br.com.fabiano.common.EnumFalha;
+import br.com.fabiano.common.EnumStatusProcessamento;
 import br.com.fabiano.linhas.CNAE_SECUNDARIAS;
 import br.com.fabiano.linhas.HEADER;
 import br.com.fabiano.linhas.PRINCIPAL;
 import br.com.fabiano.linhas.SOCIOS;
 import br.com.fabiano.linhas.TRAILLER;
+import br.com.fabiano.util.ControleProcessamento;
 
 public class readFile {
 
-	boolean status;
+    boolean status;
 
-	public boolean arquivoExiste(String arquivo) {
+    StringBuilder msgError = new StringBuilder("");
 
-		File arquivoProcessar = new File(arquivo);
+    public boolean arquivoExiste(String arquivo) {
+        File arquivoProcessar = new File(arquivo);
+        setStatus(arquivoProcessar.exists());
+        return status;
+    }
 
-		setStatus(arquivoProcessar.exists());
+    public boolean processaArquivo(String arquivo, ExecSQL execSQL, ControleProcessamento controleProcessamento) {
+        Connection conn = null;
+        boolean verLog = true;
 
-		return status;
-	}
+        try {
+            conn = new ConnectionDB().getConnection(verLog);
+            BufferedReader br = null;
+            FileReader fr = null;
+            String nomeArquivo = null;
+            
+            int count = 0;
+            int conntDB = 0;
+            try {
 
-	public boolean processaArquivo(String arquivo, ExecSQL execSQL) {
-		Connection conn = null;
+                // br = new BufferedReader(new FileReader(FILENAME));
+                fr = new FileReader(arquivo);
+                br = new BufferedReader(fr);
+                nomeArquivo = new File(arquivo).getName();
 
-		try {
-			conn = new ConnectionDB().getConnection();
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		BufferedReader br = null;
-		FileReader fr = null;
+                String sCurrentLine;
 
-		int count = 0;
-		try {
+                /*
+                 * Coração do programa
+                 */
+                while ((sCurrentLine = br.readLine()) != null) {
 
-			// br = new BufferedReader(new FileReader(FILENAME));
-			fr = new FileReader(arquivo);
-			br = new BufferedReader(fr);
+                    try {
+                        count = count + 1;
+                        conntDB = controleProcessamento.verificaProcessamento(arquivo);
 
-			String sCurrentLine;
+                        if (count > conntDB) {
 
-			/*
-			 * Coração do programa
-			 */
-			while ((sCurrentLine = br.readLine()) != null) {
+                            // Montar retorno do ponto de controle
 
-			    try {
-	                count = count + 1;
+                            String query = null;
+                            Integer tipo = Integer.parseInt(sCurrentLine.toString().substring(0, 1));
 
-	                String query = null;
-	                Integer tipo = Integer.parseInt(sCurrentLine.toString().substring(0, 1));
+                            switch (tipo.intValue()) {
+                            case 0:
+                                query = new HEADER().transforma(sCurrentLine, nomeArquivo);
+                                break;
+                            case 1:
+                                query = new PRINCIPAL().transforma(sCurrentLine,nomeArquivo ,count);
+                                break;
+                            case 2:
+                                query = new SOCIOS().transforma(sCurrentLine,nomeArquivo);
+                                break;
+                            case 6:
+                                query = new CNAE_SECUNDARIAS().transforma(sCurrentLine,nomeArquivo);
+                                break;
+                            case 9:
+                                query = new TRAILLER().transforma(sCurrentLine, nomeArquivo);
+                                break;
+                            default:
+                                break;
+                            }
 
-	                switch (tipo.intValue()) {
-	                case 0:
-	                    query = new HEADER().transforma(sCurrentLine);
-	                    break;
-	                case 1:
-	                    query = new PRINCIPAL().transforma(sCurrentLine, count);
-	                    break;
-	                case 2:
-	                    query = new SOCIOS().transforma(sCurrentLine);
-	                    break;
-	                case 6:
-	                    query = new CNAE_SECUNDARIAS().transforma(sCurrentLine);
-	                    break;
-	                case 9:
-	                    query = new TRAILLER().transforma(sCurrentLine);
-	                    break;
-	                default:
-	                    break;
-	                }
-
-	                // TODO Auto-generated method stub
-	                try {
-	                    boolean ok = execSQL.execInsert(query, conn);
-	                    if (ok) {
-	                        // System.out.println("Comando SQL : Execução OK");
-	                        System.out.println("LINHA.: " + count + " TIPO.: " + tipo.intValue());
-
-	                    } else {
-	                        System.out.println("Comando SQL : Execução NOK = " + query);
-	                    }
-	                } catch (Exception e) {
-	                    // TODO Auto-generated catch block
-	                  System.out.println("Merda no Insert: " + e.toString());
-	                }
-                    
-                } catch (Exception e) {
-                    System.out.println("Merda na Transformação: " + e.toString());
+                            // TODO Auto-generated method stub
+                            try {
+                                if (controleProcessamento.isOKfileSystem()) {
+                                    boolean execQueryok = execSQL.execInsert(query, conn);
+                                    if (execQueryok) {
+                                        System.out.println("LINHA.: " + count + " TIPO.: " + tipo.intValue());
+                                        controleProcessamento.atualizaControle(arquivo, count,
+                                                EnumStatusProcessamento.PROCESSANDO);
+                                    } else {
+                                        msgError.append("Comando SQL : Execução NOK = ");
+                                        msgError.append(query);
+                                        ErrorLOG(msgError.toString(), arquivo, controleProcessamento);
+                                        controleProcessamento.finalizaExecPorFalha(EnumFalha.FalhaDB.getIntLevel(),
+                                                readFile.class.getName());
+                                    }
+                                } else {
+                                    msgError.append("DB   Diretório não disponivel = ");
+                                    msgError.append(controleProcessamento.getPathDB());
+                                    msgError.append(" : Status = ");
+                                    msgError.append(controleProcessamento.isOKpathDB());
+                                    msgError.append("\n CNPJ Diretório não disponivel = ");
+                                    msgError.append(controleProcessamento.getPathCNPJ());
+                                    msgError.append(" : Status = ");
+                                    msgError.append(controleProcessamento.isOkPathCNPJ());
+                                    ErrorLOG(msgError.toString(), arquivo, controleProcessamento);
+                                    controleProcessamento.finalizaExecPorFalha(EnumFalha.FalhaFile.getIntLevel(),
+                                            readFile.class.getName());
+                                }
+                            } catch (SQLException se) {
+                                msgError.append("Merda no SQL Insert: ");
+                                msgError.append(se.toString());
+                                ErrorLOG(msgError.toString(), arquivo, controleProcessamento);
+                                controleProcessamento.finalizaExecPorFalha(EnumFalha.FalhaDB.getIntLevel(),
+                                        readFile.class.getName());
+                            } catch (IOException ioe) {
+                                msgError.append("Merda de IO antes do Insert: ");
+                                msgError.append(ioe.toString());
+                                ErrorLOG(msgError.toString(), arquivo, controleProcessamento);
+                                controleProcessamento.finalizaExecPorFalha(EnumFalha.FalhaFile.getIntLevel(),
+                                        readFile.class.getName());
+                            } catch (Exception e) {
+                                msgError.append("Merda antes do Insert: ");
+                                msgError.append(e.toString());
+                                ErrorLOG(msgError.toString(), arquivo, controleProcessamento);
+                                controleProcessamento.finalizaExecPorFalha(EnumFalha.FalhaProcessamento.getIntLevel(),
+                                        readFile.class.getName());
+                            }
+                        }
+                    } catch (Exception e) {
+                        msgError.append("Merda na Transformação: ");
+                        msgError.append(e.toString());
+                        ErrorLOG(msgError.toString(), arquivo, controleProcessamento);
+                        controleProcessamento.finalizaExecPorFalha(EnumFalha.FalhaFile.getIntLevel(),
+                                readFile.class.getName());
+                    }
                 }
-			}
+            } catch (Exception e) {
+                e.printStackTrace();
+                msgError.append("Merda Connection Banco : ");
+                msgError.append(e.toString());
+                ErrorLOG(msgError.toString(), arquivo, controleProcessamento);
+                controleProcessamento.finalizaExecPorFalha(EnumFalha.FalhaFile.getIntLevel(), readFile.class.getName());
+            } finally {
+                try {
+                    if (br != null)
+                        br.close();
+                    if (fr != null)
+                        fr.close();
+                    if (conn != null) {
+                        try {
+                            if (!conn.isClosed()) {
+                                conn.close();
+                            }
+                        } catch (SQLException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                    }
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        } catch (Exception e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
 
-		} catch (IOException e) {
+        return false;
+    }
 
-			e.printStackTrace();
+    public boolean isStatus() {
+        return status;
+    }
 
-		} finally {
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
 
-			try {
+    private void ErrorLOG(String msg, String arquivo, ControleProcessamento controleProcessamento) {
 
-				if (br != null)
-					br.close();
+        try {
+            controleProcessamento.atualizaControle(arquivo, 0, EnumStatusProcessamento.ERRO);
+            System.out.println(msg);
+        } catch (Exception e) {
+            // TODO: handle exception
+            System.out.println("Erro LOG msg: " + msg + " exception: " + e);
+        } finally {
+            msgError.delete(0, msgError.length());
+        }
 
-				if (fr != null)
-					fr.close();
+    }
 
-				if (conn != null) {
-					try {
-						if (!conn.isClosed()) {
-							conn.close();
-						}
-					} catch (SQLException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-
-			} catch (IOException ex) {
-
-				ex.printStackTrace();
-			}
-		}
-
-		return false;
-
-	}
-
-	public boolean isStatus() {
-		return status;
-	}
-
-	public void setStatus(boolean status) {
-		this.status = status;
-	}
+    protected void finalize() {
+        System.gc();
+        System.out.println("object is garbage collected " + getClass());
+    }
 }

@@ -1,3 +1,5 @@
+nohup sh -x exec.sh 20 &
+
 ================= SHELL =================
 for ps in `ps -ef | grep -iE 'cnpj|exec.sh' | grep -v grep | awk '{print $2}'` 
 do
@@ -6,6 +8,7 @@ done
 
 grep -vi tipo ~/CNPJ/log_parallel/log_java_K3241.K03200DV.D90607.L0000*
 grep -vi tipo ~/CNPJ/log_parallel/log_java_K3241.K03200DV.D90607.L0000* | grep -viE 'WARN|postgre|conectou'
+grep -vi tipo ~/CNPJ/log_parallel/log_java_K3241.K03200DV.D90607.L0000* | grep -viE 'WARN|postgre|conectou|SQL|DICA|tblspc|42501' | grep -v 'L000..:0' | grep -v 'L000..:58030'
 
 ================= DB ================= 
 
@@ -26,6 +29,4 @@ delete from CNPJ.tab_header;
 delete from CNPJ.tab_principal;
 delete from CNPJ.tab_socios;
 delete from CNPJ.tab_trailler; 
-
-
 
