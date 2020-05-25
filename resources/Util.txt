@@ -1,4 +1,13 @@
-nohup sh -x exec.sh 20 &
+cd ~;
+mkdir CNPJ;
+cd ~/CNPJ;
+mkdir log_exec;
+ln -s ~/git/JC_CNPJ/resources/exec.sh exec.sh;
+ln -s ~/git/JC_CNPJ/resources/processa_cnpj.sh processa_cnpj.sh;
+ln -s /media/jc-pc/A6AA9A24AA99F153/Users/liceu/Documents/Lista\ de\ CNPJs\ do\ Brasil/DADOS\ ABERTOS\ CNPJ/ ARQUIVOS
+ln -s /home/jc-pc/git/JC_CNPJ/target/JC_CNPJ-0.0.1-SNAPSHOT-jar-with-dependencies.jar  CNPJ_LOAD.jar
+
+nohup sh -x exec.sh 10 &
 
 ================= SHELL =================
 for ps in `ps -ef | grep -iE 'cnpj|exec.sh' | grep -v grep | awk '{print $2}'` 

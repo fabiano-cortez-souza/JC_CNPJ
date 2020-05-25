@@ -1,14 +1,17 @@
 #!/bin/bash
 qtde_arquivo_proc=$1;
-pahCNPJ="/ARQUIVOS";
+pahCNPJ="/home/jc-pc/CNPJ/ARQUIVOS";
 retorno=0;
 	
 inicio() {
  # Arquivos de work/log
- LOG_PARALLEL="/home/jc/CNPJ/log_exec";
- LISTA_CNPJ="/home/jc/CNPJ/lista_cnpj";
- PARALLEL_CNPJ_LOG="/home/jc/CNPJ/parallel_cnpj_log";
- DIRLOG="/home/jc/CNPJ/log_parallel";
+    cd ~/CNPJ;
+ pathRaiz=`pwd`; 
+
+ LOG_PARALLEL="${pathRaiz}/log_exec";
+ LISTA_CNPJ="${pathRaiz}/lista_cnpj";
+ PARALLEL_CNPJ_LOG="${pathRaiz}/parallel_cnpj_log";
+ DIRLOG="${pathRaiz}/log_parallel";
  # Remoção dos arquivos de work/log
  rm -f $LOG_PARALLEL $LISTA_CNPJ $PARALLEL_CNPJ_LOG $DIRLOG/lista_cnpj_processado*;
  
@@ -43,7 +46,7 @@ fim() {
 } 
 
 processa_parallel() {
- cat $LISTA_CNPJ | parallel --joblog $PARALLEL_CNPJ_LOG -j$qtde_arquivo_proc 'sh /home/jc/CNPJ/processa_cnpj.sh {}';
+ cat $LISTA_CNPJ | parallel --joblog $PARALLEL_CNPJ_LOG -j$qtde_arquivo_proc 'sh ~/CNPJ/processa_cnpj.sh {}';
  retorno=$?              
  case $retorno in 
  0)	 echo "Parallel OK $retorno."     >> $LOG_PARALLEL ;;

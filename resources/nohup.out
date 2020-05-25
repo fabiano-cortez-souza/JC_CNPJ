@@ -1,0 +1,31 @@
++ qtde_arquivo_proc=10
++ pahCNPJ=/media/jc-pc/A6AA9A24AA99F153/Users/liceu/Documents/Lista\ de\ CNPJs\ do\ Brasil/DADOS\ ABERTOS\ CNPJ
++ retorno=0
++ inicio
++ LOG_PARALLEL=/home/jc/CNPJ/log_exec
++ LISTA_CNPJ=/home/jc/CNPJ/lista_cnpj
++ PARALLEL_CNPJ_LOG=/home/jc/CNPJ/parallel_cnpj_log
++ DIRLOG=/home/jc/CNPJ/log_parallel
++ rm -f /home/jc/CNPJ/log_exec /home/jc/CNPJ/lista_cnpj /home/jc/CNPJ/parallel_cnpj_log /home/jc/CNPJ/log_parallel/lista_cnpj_processado*
++ touch /home/jc/CNPJ/log_exec /home/jc/CNPJ/lista_cnpj /home/jc/CNPJ/parallel_cnpj_log
+touch: não foi possível tocar '/home/jc/CNPJ/log_exec': Arquivo ou diretório inexistente
+touch: não foi possível tocar '/home/jc/CNPJ/lista_cnpj': Arquivo ou diretório inexistente
+touch: não foi possível tocar '/home/jc/CNPJ/parallel_cnpj_log': Arquivo ou diretório inexistente
++ date +%Y-%m-%d %T
++ data=2020-05-25 01:39:11
+exec.sh: 19: exec.sh: cannot create /home/jc/CNPJ/log_exec: Directory nonexistent
++ echo Inicio processamento do arquivo.
+exec.sh: 20: exec.sh: cannot create /home/jc/CNPJ/log_exec: Directory nonexistent
++ echo 2020-05-25 01:39:11
++ cd /media/jc-pc/A6AA9A24AA99F153/Users/liceu/Documents/Lista\ de\ CNPJs\ do\ Brasil/DADOS\ ABERTOS\ CNPJ
+exec.sh: 24: cd: can't cd to /media/jc-pc/A6AA9A24AA99F153/Users/liceu/Documents/Lista\
++ MASCARA_ARQUIVO=K3241.K03200DV.D90607.L000??
+exec.sh: 28: exec.sh: cannot create /home/jc/CNPJ/lista_cnpj: Directory nonexistent
++ ls -1f K3241.K03200DV.D90607.L000??
++ [ 2 -eq 0 ]
+exec.sh: 32: exec.sh: cannot create /home/jc/CNPJ/log_exec: Directory nonexistent
++ echo Falha na listagem de arquivos
++ rm
+rm: falta operando
+Tente "rm --help" para mais informações.
++ exit 1
