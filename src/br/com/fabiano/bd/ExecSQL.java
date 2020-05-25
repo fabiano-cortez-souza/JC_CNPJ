@@ -7,7 +7,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.postgresql.jdbc2.ArrayAssistantRegistry;
+import br.com.fabiano.common.EnumFalha;
+import br.com.fabiano.util.ControleProcessamento;
 
 public class ExecSQL {
 
@@ -18,10 +19,10 @@ public class ExecSQL {
      * exec(sqlSentence); }
      */
 
-    public boolean testeDB(boolean verLog) {
+    public boolean testeDB(boolean verLog, ControleProcessamento controleProcessamento) {
         Connection conn;
         try {
-            conn = new ConnectionDB().getConnection(verLog);
+            conn = new ConnectionDB().getConnection(verLog, controleProcessamento);
             if (conn != null) {
                 setStatus(true);
                 if (!conn.isClosed()) {
@@ -37,13 +38,18 @@ public class ExecSQL {
         return status;
     }
 
-    public List<String> exec(String query, Connection conn, boolean verLog) throws Exception {
+    public List<String> exec(String query, Connection conn, boolean verLog,ControleProcessamento controleProcessamento) throws Exception {
 
+        String msgException = "";
+        boolean finalizaProcessamento = false;
+        
         List<String> list = new ArrayList<String>();
 
         ResultSet rs = null;
-
-        conn = new ConnectionDB().getConnection(verLog);
+        //conn.close();
+        
+        //conn = new ConnectionDB().getConnection(verLog,controleProcessamento);
+        
         if (conn == null) {
             // System.out.println("You made it, take control your database now!");
             // } else {
@@ -74,6 +80,9 @@ public class ExecSQL {
                 System.out.println(e.getErrorCode());
                 System.out.println(e.getSQLState());
                 // setStatus(false);
+                msgException = msgException + e.toString();
+                finalizaProcessamento = true;
+                
             } finally {
                 if (rs != null) {
                     if (!rs.isClosed()) {
@@ -85,12 +94,19 @@ public class ExecSQL {
                         stmt.close();
                     }
                 }
+                /*
                 if (conn != null) {
                     if (!conn.isClosed()) {
                         conn.close();
                     }
                 }
+                */
             }
+            if (finalizaProcessamento) {
+                System.out.println("Falha processamento ex: " + msgException);
+                controleProcessamento.finalizaExecPorFalha(EnumFalha.FalhaProcessamento.getIntLevel(), this.getClass().getName());
+            }
+
         }
         return list;
     }

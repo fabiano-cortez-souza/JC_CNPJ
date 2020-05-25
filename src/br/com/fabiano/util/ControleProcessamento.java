@@ -2,18 +2,16 @@ package br.com.fabiano.util;
 
 import java.io.File;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Properties;
 
 import br.com.fabiano.bd.ConnectionDB;
 import br.com.fabiano.bd.ExecSQL;
+import br.com.fabiano.bd.SchemaDB;
 import br.com.fabiano.common.EnumStatusProcessamento;
 import br.com.fabiano.infra.GetProperties;
-import br.com.fabiano.main.JC_APP;
 
-public class ControleProcessamento {
+public class ControleProcessamento extends SchemaDB {
 
     private boolean isOkPathCNPJ = false;
     private boolean isOKpathDB = false;
@@ -38,15 +36,12 @@ public class ControleProcessamento {
         setSql("");
         setSqlExecIsOK(false);
 
-        Properties prop = null;
-
         try {
-            prop = new GetProperties().getProperties();
-            setConn(new ConnectionDB().getConnection(verLog));
+            setConn(new ConnectionDB().getConnection(verLog, this));
             setExecSql(new ExecSQL());
 
-            setPathCNPJ(prop.getProperty("pathCNPJ"));
-            setPathDB(prop.getProperty("pathDB"));
+            setPathCNPJ(GetProperties.path_CNPJ());
+            setPathDB(GetProperties.path_DB());
 
             setPathcnpj(new File(getPathCNPJ()));
             setPathdb(new File(getPathDB()));
@@ -62,10 +57,9 @@ public class ControleProcessamento {
     }
 
     public boolean gravaControle(String arquivo, int registro) throws Exception {
-
         sqlControle.delete(0, sqlControle.length());
 
-        sqlControle.append("INSERT INTO CNPJ.TAB_CONTROLE ");
+        sqlControle.append("INSERT INTO " + getSchemaDB(arquivo) + ".TAB_CONTROLE ");
         sqlControle.append("(ARQUIVO,REGISTRO_PROCESSADO,STATUS_PORCESSAMENTO)");
         sqlControle.append(" VALUES (");
         sqlControle.append("\'" + arquivo + "\',");
@@ -86,10 +80,11 @@ public class ControleProcessamento {
     }
 
     public boolean atualizaControle(String arquivo, int registro, EnumStatusProcessamento enumstatus) throws Exception {
-        sqlControle.delete(0, sqlControle.length());
-        sqlControle.append("UPDATE CNPJ.TAB_CONTROLE ");
 
+        sqlControle.delete(0, sqlControle.length());
         arquivo = new File(arquivo).getName();
+        
+        sqlControle.append("UPDATE " + getSchemaDB(arquivo) + ".TAB_CONTROLE ");
 
         switch (enumstatus) {
         case ERRO:
@@ -123,12 +118,11 @@ public class ControleProcessamento {
 
         boolean verLog = false;
         int registro = 0;
-        ResultSet rs = null;
         arquivo = new File(arquivo).getName();
 
         sqlControle.delete(0, sqlControle.length());
         sqlControle.append("SELECT REGISTRO_PROCESSADO, STATUS_PORCESSAMENTO ");
-        sqlControle.append("FROM CNPJ.TAB_CONTROLE ");
+        sqlControle.append("FROM " + getSchemaDB(arquivo) + ".TAB_CONTROLE ");
         sqlControle.append("WHERE ARQUIVO = ");
         sqlControle.append("\'" + arquivo + "\'");
         sqlControle.append(" ;");
@@ -136,7 +130,7 @@ public class ControleProcessamento {
         setSql(sqlControle.toString());
         try {
             // setSqlExecIsOK(execSql.exec(sql, conn));
-            List<String> list = execSql.exec(sql, conn, verLog);
+            List<String> list = execSql.exec(sql, conn, verLog, this);
 
             if (!(list == null) && list.size() > 0) {
                 for (String aString : list) {

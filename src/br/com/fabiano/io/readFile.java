@@ -23,7 +23,7 @@ public class readFile {
     boolean status;
 
     StringBuilder msgError = new StringBuilder("");
-
+    
     public boolean arquivoExiste(String arquivo) {
         File arquivoProcessar = new File(arquivo);
         setStatus(arquivoProcessar.exists());
@@ -35,7 +35,7 @@ public class readFile {
         boolean verLog = true;
 
         try {
-            conn = new ConnectionDB().getConnection(verLog);
+            conn = new ConnectionDB().getConnection(verLog,controleProcessamento);
             BufferedReader br = null;
             FileReader fr = null;
             String nomeArquivo = null;
